@@ -36,10 +36,15 @@ Shader "Unlit/NewUnlitShader"
                 v2f o;
                 float4 base = UnityObjectToClipPos(v.vertex);
 
+                o.vertex = base;
+
+                if (v.uv.x == 0 && v.uv.y == 0 && v.uv.z == 0)
+                    return o;
+
                 /*float Precision errors adjuster
                   Distance dependent paremeter, depends on the camera distance, fov, near far... ...
                   Very complicated stuff, we'll approximate it using an experimental method*/
-                float4 mul = 1;
+                float4 mul = 0.5;
 
                 float4 extended = UnityObjectToClipPos(v.vertex + mul * v.uv);
 
@@ -53,7 +58,7 @@ Shader "Unlit/NewUnlitShader"
 
                 float2 directionScaled = 8 * directionCrossed / float2(_ScreenParams.x, _ScreenParams.y);
 
-                o.vertex = base + float4(directionScaled.x * base.w, directionScaled.y * base.w, 0, 0);
+                o.vertex += float4(directionScaled.x * base.w, directionScaled.y * base.w, 0, 0);
 
                 return o;
             }
