@@ -19,37 +19,41 @@ public class VectorLine : MonoBehaviour
         };
 
         mesh = new Mesh();
+        CreateMesh(linepoints);
+    }
 
+    private void CreateMesh(Vector2[] linepoints)
+    {
         Vector3[] vertices = new Vector3[5 * (linepoints.Length - 1)];
 
-        for ( int i = 0; i< linepoints.Length -1; i++)
+        for (int i = 0; i < linepoints.Length - 1; i++)
         {
             vertices[5 * i] = new Vector3(linepoints[i].x, linepoints[i].y, 0);
-            vertices[5 * i + 1] = new Vector3(linepoints[i+1].x, linepoints[i + 1].y, 0);
+            vertices[5 * i + 1] = new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0);
             vertices[5 * i + 2] = new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0);
             vertices[5 * i + 3] = new Vector3(linepoints[i].x, linepoints[i].y, 0);
-            vertices[5 * i + 4] = new Vector3(linepoints[i+1].x, linepoints[i+1].y, 0);
+            vertices[5 * i + 4] = new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0);
         }
 
         mesh.vertices = vertices;
 
-        Vector3 [] uvs = new Vector3[5 * (linepoints.Length - 1)];
+        Vector3[] uvs = new Vector3[5 * (linepoints.Length - 1)];
         for (int i = 0; i < linepoints.Length - 1; i++)
         {
-            uvs[5 * i] = (linepoints[i+1] - linepoints[i]).normalized;
+            uvs[5 * i] = (linepoints[i + 1] - linepoints[i]).normalized;
             uvs[5 * i + 1] = (linepoints[i + 1] - linepoints[i]).normalized;
-            uvs[5 * i + 2] = (linepoints[i] - linepoints[i+1]).normalized;
+            uvs[5 * i + 2] = (linepoints[i] - linepoints[i + 1]).normalized;
             uvs[5 * i + 3] = (linepoints[i] - linepoints[i + 1]).normalized;
             uvs[5 * i + 4] = Vector3.zero;
         }
 
-        
+
         mesh.SetUVs(0, uvs);
 
-        int[] triangles = new int[9 * (linepoints.Length-1)];
-        for (int i=0; i< linepoints.Length - 1; i++)
+        int[] triangles = new int[9 * (linepoints.Length - 1)];
+        for (int i = 0; i < linepoints.Length - 1; i++)
         {
-            triangles[i * 9 ] = i * 5 + 1;
+            triangles[i * 9] = i * 5 + 1;
             triangles[i * 9 + 1] = i * 5;
             triangles[i * 9 + 2] = i * 5 + 2;
             triangles[i * 9 + 3] = i * 5 + 3;
@@ -76,6 +80,7 @@ public class VectorLine : MonoBehaviour
         mesh.triangles = triangles;
 
         GetComponent<MeshFilter>().mesh = mesh;
+
     }
 
     private void Update()
