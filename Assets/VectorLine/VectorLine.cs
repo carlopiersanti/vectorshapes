@@ -8,25 +8,22 @@ public class VectorLine : MonoBehaviour
 
     public Mesh mesh;
 
+    List<Vector2> linepoints = new List<Vector2>();
+
     private void Awake()
     {
-        Vector2[] linepoints = new Vector2[]
-        {
-            new Vector2(-1,0),
-            new Vector2(1,0),
-            new Vector2(3,3),
-            new Vector2(6,0)
-        };
-
         mesh = new Mesh();
         CreateMesh(linepoints);
     }
 
-    private void CreateMesh(Vector2[] linepoints)
+    private void CreateMesh(List<Vector2> linepoints)
     {
-        Vector3[] vertices = new Vector3[5 * (linepoints.Length - 1)];
+        if (linepoints.Count < 2)
+            return;
 
-        for (int i = 0; i < linepoints.Length - 1; i++)
+        Vector3[] vertices = new Vector3[5 * (linepoints.Count - 1)];
+
+        for (int i = 0; i < linepoints.Count - 1; i++)
         {
             vertices[5 * i] = new Vector3(linepoints[i].x, linepoints[i].y, 0);
             vertices[5 * i + 1] = new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0);
@@ -37,8 +34,8 @@ public class VectorLine : MonoBehaviour
 
         mesh.vertices = vertices;
 
-        Vector3[] uvs = new Vector3[5 * (linepoints.Length - 1)];
-        for (int i = 0; i < linepoints.Length - 1; i++)
+        Vector3[] uvs = new Vector3[5 * (linepoints.Count - 1)];
+        for (int i = 0; i < linepoints.Count - 1; i++)
         {
             uvs[5 * i] = (linepoints[i + 1] - linepoints[i]).normalized;
             uvs[5 * i + 1] = (linepoints[i + 1] - linepoints[i]).normalized;
@@ -50,8 +47,8 @@ public class VectorLine : MonoBehaviour
 
         mesh.SetUVs(0, uvs);
 
-        int[] triangles = new int[9 * (linepoints.Length - 1)];
-        for (int i = 0; i < linepoints.Length - 1; i++)
+        int[] triangles = new int[9 * (linepoints.Count - 1)];
+        for (int i = 0; i < linepoints.Count - 1; i++)
         {
             triangles[i * 9] = i * 5 + 1;
             triangles[i * 9 + 1] = i * 5;
@@ -61,7 +58,7 @@ public class VectorLine : MonoBehaviour
             triangles[i * 9 + 5] = i * 5;
         }
 
-        for (int i = 1; i < linepoints.Length - 1; i++)
+        for (int i = 1; i < linepoints.Count - 1; i++)
         {
             if (Vector2.SignedAngle(linepoints[i - 1] - linepoints[i], linepoints[i + 1] - linepoints[i]) < 0)
             {
@@ -83,8 +80,20 @@ public class VectorLine : MonoBehaviour
 
     }
 
+    Vector3 lastMousePosition = new Vector3(float.NaN, float.NaN, float.NaN);
+
     private void Update()
     {
-        
+        if (Input.GetMouseButton(0) && Input.mousePosition != lastMousePosition)
+        {
+            lastMousePosition = Input.mousePosition;
+            Ray r = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1));
+            if (Physics.Raycast(r, out var raycastHit))
+            {
+                Vector3 hitpoint = transform.InverseTransformPoint(raycastHit.point);
+                linepoints.Add(hitpoint);
+                CreateMesh(linepoints);
+            }
+        }
     }
 }
