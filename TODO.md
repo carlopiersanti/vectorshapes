@@ -1,0 +1,4 @@
+- Only create a new point if there is a pixel offset of at least 2,3 px
+- Each X points create a new submesh rather than keep editing the existing one
+- Use the new mesh api to avoi duplicate calculations (bounds...)
+- Batch submeshes draw calls
