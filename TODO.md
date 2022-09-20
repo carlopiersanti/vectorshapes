@@ -2,3 +2,5 @@
 - Each X points create a new submesh rather than keep editing the existing one
 - Use the new mesh api to avoi duplicate calculations (bounds...)
 - Batch submeshes draw calls
+- Use quads
+- Implement GPU raycast
