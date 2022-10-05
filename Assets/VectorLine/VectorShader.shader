@@ -41,12 +41,7 @@ Shader "Unlit/NewUnlitShader"
                 if (v.uv.x == 0 && v.uv.y == 0 && v.uv.z == 0)
                     return o;
 
-                /*float Precision errors adjuster
-                  Distance dependent paremeter, depends on the camera distance, fov, near far... ...
-                  Very complicated stuff, we'll approximate it using an experimental method*/
-                float4 mul = 0.5;
-
-                float4 extended = UnityObjectToClipPos(v.vertex + mul * v.uv);
+                float4 extended = UnityObjectToClipPos(v.vertex + v.uv);
 
                 float2 direction = float2(
                     extended.x / extended.w - base.x / base.w,
