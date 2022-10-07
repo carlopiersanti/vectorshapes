@@ -1,17 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class VectorLine : MonoBehaviour
 {
+    public TMP_Text textMesh;
+
     public Material material;
 
     public Mesh mesh;
 
     List<Vector2> linepoints = new List<Vector2>();
-
+    ComputeBuffer collisionBuffer;
     private void Awake()
     {
+        collisionBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.Structured);
+        collisionBuffer.SetData(new uint[] { 0 });
+        Graphics.SetRandomWriteTarget(1, collisionBuffer, true);
+        material.SetBuffer("_collisionBuffer", collisionBuffer);
+
         mesh = new Mesh();
         CreateMesh(linepoints);
     }
@@ -84,6 +92,10 @@ public class VectorLine : MonoBehaviour
 
     private void Update()
     {
+        uint[] data = new uint[1];
+        collisionBuffer.GetData(data);
+        textMesh.text = data[0].ToString();
+        collisionBuffer.SetData(new uint[] { 0 });
         if (Input.GetMouseButton(0) && Input.mousePosition != lastMousePosition)
         {
             lastMousePosition = Input.mousePosition;

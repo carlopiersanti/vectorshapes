@@ -13,6 +13,7 @@ Shader "Unlit/NewUnlitShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 4.5
 
             #include "UnityCG.cginc"
 
@@ -30,6 +31,8 @@ Shader "Unlit/NewUnlitShader"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+
+            uniform RWStructuredBuffer<uint> _collisionBuffer : register(u1);
 
             v2f vert (appdata v)
             {
@@ -58,8 +61,10 @@ Shader "Unlit/NewUnlitShader"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag(v2f i) : SV_Target
             {
+                uint a;
+                InterlockedExchange(_collisionBuffer[0], 1, a);
                 fixed4 col = fixed4(1.0f,0.0f,0.0f,0.0f);
                 return col;
             }
