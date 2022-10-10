@@ -1,4 +1,4 @@
-Shader "Unlit/NewUnlitShader"
+Shader "Unlit/VectorLineMaterial"
 {
     Properties
     {
@@ -64,7 +64,7 @@ Shader "Unlit/NewUnlitShader"
             fixed4 frag(v2f i) : SV_Target
             {
                 uint a;
-                InterlockedExchange(_collisionBuffer[0], 1, a);
+                InterlockedExchange(_collisionBuffer[0], i.vertex.x, a);
                 fixed4 col = fixed4(1.0f,0.0f,0.0f,0.0f);
                 return col;
             }

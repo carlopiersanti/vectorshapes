@@ -1,27 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class VectorLine : MonoBehaviour
 {
-    public TMP_Text textMesh;
+    private List<Vector3> vertices;
+    private List<Vector3> uvs;
+    private List<int> triangles;
 
-    public Material material;
+    [SerializeField]
+    private Material material;
 
-    public Mesh mesh;
+    [SerializeField]
+    private Mesh mesh;
 
-    List<Vector2> linepoints = new List<Vector2>();
-    ComputeBuffer collisionBuffer;
-    private void Awake()
+    public void SetPoints(List<Vector3> newvertices)
     {
-        collisionBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.Structured);
-        collisionBuffer.SetData(new uint[] { 0 });
-        Graphics.SetRandomWriteTarget(1, collisionBuffer, true);
-        material.SetBuffer("_collisionBuffer", collisionBuffer);
 
-        mesh = new Mesh();
-        CreateMesh(linepoints);
+    }
+
+    public void AddPoint(Vector3 newVertex)
+    {
+
     }
 
     private void CreateMesh(List<Vector2> linepoints)
@@ -29,41 +29,43 @@ public class VectorLine : MonoBehaviour
         if (linepoints.Count < 2)
             return;
 
-        Vector3[] vertices = new Vector3[5 * (linepoints.Count - 1)];
+        vertices = new List<Vector3>(5 * (linepoints.Count - 1));
 
         for (int i = 0; i < linepoints.Count - 1; i++)
         {
-            vertices[5 * i] = new Vector3(linepoints[i].x, linepoints[i].y, 0);
-            vertices[5 * i + 1] = new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0);
-            vertices[5 * i + 2] = new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0);
-            vertices[5 * i + 3] = new Vector3(linepoints[i].x, linepoints[i].y, 0);
-            vertices[5 * i + 4] = new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0);
+            vertices.Add(new Vector3(linepoints[i].x, linepoints[i].y, 0) );
+            vertices.Add(new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0));
+            vertices.Add(new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0));
+            vertices.Add(new Vector3(linepoints[i].x, linepoints[i].y, 0));
+            vertices.Add(new Vector3(linepoints[i + 1].x, linepoints[i + 1].y, 0));
+            mesh.bounds.Encapsulate(linepoints[i]);
         }
+        mesh.bounds.Encapsulate(linepoints[linepoints.Count - 1]);
 
-        mesh.vertices = vertices;
+        mesh.SetVertices(vertices);
 
-        Vector3[] uvs = new Vector3[5 * (linepoints.Count - 1)];
+        uvs = new List<Vector3>(5 * (linepoints.Count - 1));
         for (int i = 0; i < linepoints.Count - 1; i++)
         {
-            uvs[5 * i] = (linepoints[i + 1] - linepoints[i]);
-            uvs[5 * i + 1] = (linepoints[i + 1] - linepoints[i]);
-            uvs[5 * i + 2] = (linepoints[i] - linepoints[i + 1]);
-            uvs[5 * i + 3] = (linepoints[i] - linepoints[i + 1]);
-            uvs[5 * i + 4] = Vector3.zero;
+            uvs.Add(linepoints[i + 1] - linepoints[i]);
+            uvs.Add(linepoints[i + 1] - linepoints[i]);
+            uvs.Add(linepoints[i] - linepoints[i + 1]);
+            uvs.Add(linepoints[i] - linepoints[i + 1]);
+            uvs.Add(Vector3.zero);
         }
 
 
         mesh.SetUVs(0, uvs);
 
-        int[] triangles = new int[12 * (linepoints.Count - 1)];
+        triangles = new List<int>(12 * (linepoints.Count - 1));
         for (int i = 0; i < linepoints.Count - 1; i++)
         {
-            triangles[i * 12] = i * 5 + 1;
-            triangles[i * 12 + 1] = i * 5;
-            triangles[i * 12 + 2] = i * 5 + 2;
-            triangles[i * 12 + 3] = i * 5 + 3;
-            triangles[i * 12 + 4] = i * 5 + 2;
-            triangles[i * 12 + 5] = i * 5;
+            triangles.Add(i * 5 + 1);
+            triangles.Add(i * 5);
+            triangles.Add(i * 5 + 2);
+            triangles.Add(i * 5 + 3);
+            triangles.Add(i * 5 + 2);
+            triangles.Add(i * 5);
         }
 
         for (int i = 1; i < linepoints.Count - 1; i++)
@@ -82,30 +84,8 @@ public class VectorLine : MonoBehaviour
             }
         }
 
-        mesh.triangles = triangles;
+        mesh.SetTriangles(triangles, 0, false);
 
         GetComponent<MeshFilter>().mesh = mesh;
-
-    }
-
-    Vector3 lastMousePosition = new Vector3(float.NaN, float.NaN, float.NaN);
-
-    private void Update()
-    {
-        uint[] data = new uint[1];
-        collisionBuffer.GetData(data);
-        textMesh.text = data[0].ToString();
-        collisionBuffer.SetData(new uint[] { 0 });
-        if (Input.GetMouseButton(0) && Input.mousePosition != lastMousePosition)
-        {
-            lastMousePosition = Input.mousePosition;
-            Ray r = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1));
-            if (Physics.Raycast(r, out var raycastHit))
-            {
-                Vector3 hitpoint = transform.InverseTransformPoint(raycastHit.point);
-                linepoints.Add(hitpoint);
-                CreateMesh(linepoints);
-            }
-        }
     }
 }
