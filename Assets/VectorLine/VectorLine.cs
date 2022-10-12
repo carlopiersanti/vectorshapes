@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VectorLine : MonoBehaviour
 {
-    private List<Vector3> points;
+    private List<Vector3> points = new List<Vector3>();
     private List<Vector3> vertices;
     private List<Vector3> uvs;
     private List<int> triangles;
@@ -24,45 +24,51 @@ public class VectorLine : MonoBehaviour
     public void AddPoint(Vector3 newPoint)
     {
         points.Add(newPoint);
-        vertices.Add(points[points.Count - 2]);
-        vertices.Add(newPoint);
-        vertices.Add(newPoint);
-        vertices.Add(points[points.Count - 2]);
-        vertices.Add(newPoint);
-        mesh.bounds.Encapsulate(newPoint);
-        mesh.SetVertices(vertices);
 
-        uvs.Add(newPoint - points[points.Count - 2]);
-        uvs.Add(newPoint - points[points.Count - 2]);
-        uvs.Add(points[points.Count - 2] - newPoint);
-        uvs.Add(points[points.Count - 2] - newPoint);
-        uvs.Add(Vector3.zero);
+        if (points.Count < 2)
+            return;
+        else if (points.Count == 2)
+            CreateMesh(points);
+        else
+        {
+            vertices.Add(points[points.Count - 2]);
+            vertices.Add(newPoint);
+            vertices.Add(newPoint);
+            vertices.Add(points[points.Count - 2]);
+            vertices.Add(newPoint);
+            mesh.bounds.Encapsulate(newPoint);
+            mesh.SetVertices(vertices);
 
-        mesh.SetUVs(0, uvs);
+            uvs.Add(newPoint - points[points.Count - 2]);
+            uvs.Add(newPoint - points[points.Count - 2]);
+            uvs.Add(points[points.Count - 2] - newPoint);
+            uvs.Add(points[points.Count - 2] - newPoint);
+            uvs.Add(Vector3.zero);
 
-        triangles.Add((points.Count - 3) * 5 + 4);
-        triangles.Add((points.Count - 3) * 5 + 5);
-        triangles.Add((points.Count - 3) * 5 + 1);
-        triangles.Add((points.Count - 3) * 5 + 4);
-        triangles.Add((points.Count - 3) * 5 + 2);
-        triangles.Add((points.Count - 3) * 5 + 8);
+            mesh.SetUVs(0, uvs);
 
-        triangles.Add((points.Count - 2) * 5 + 1);
-        triangles.Add((points.Count - 2) * 5);
-        triangles.Add((points.Count - 2) * 5 + 2);
-        triangles.Add((points.Count - 2) * 5 + 3);
-        triangles.Add((points.Count - 2) * 5 + 2);
-        triangles.Add((points.Count - 2) * 5);
+            triangles.Add((points.Count - 3) * 5 + 4);
+            triangles.Add((points.Count - 3) * 5 + 5);
+            triangles.Add((points.Count - 3) * 5 + 1);
+            triangles.Add((points.Count - 3) * 5 + 4);
+            triangles.Add((points.Count - 3) * 5 + 2);
+            triangles.Add((points.Count - 3) * 5 + 8);
 
-        mesh.SetTriangles(triangles, 0, false);
+            triangles.Add((points.Count - 2) * 5 + 1);
+            triangles.Add((points.Count - 2) * 5);
+            triangles.Add((points.Count - 2) * 5 + 2);
+            triangles.Add((points.Count - 2) * 5 + 3);
+            triangles.Add((points.Count - 2) * 5 + 2);
+            triangles.Add((points.Count - 2) * 5);
 
-        mesh.bounds.Encapsulate(newPoint);
+            mesh.SetTriangles(triangles, 0, false);
+
+            mesh.bounds.Encapsulate(newPoint);
+        }
     }
 
-    public void CreateMesh(List<Vector3> newPoints)
+    private void CreateMesh(List<Vector3> newPoints)
     {
-        points = new List<Vector3>(newPoints);
-
         mesh = new Mesh();
 
         vertices = new List<Vector3>(5 * (newPoints.Count - 1));
