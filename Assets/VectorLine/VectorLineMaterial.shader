@@ -25,13 +25,15 @@ Shader "Unlit/VectorLineMaterial"
 
             struct v2f
             {
-                UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
             };
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
+            int identifier;
+            float3 mousePosition;
+            int selectedIdentifier;
             uniform RWStructuredBuffer<uint> _collisionBuffer : register(u1);
 
             v2f vert (appdata v)
@@ -58,15 +60,29 @@ Shader "Unlit/VectorLineMaterial"
 
                 o.vertex += float4(directionScaled.x * base.w, directionScaled.y * base.w, 0, 0);
 
+
                 return o;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
-                uint a;
-                InterlockedExchange(_collisionBuffer[0], i.vertex.x, a);
-                fixed4 col = fixed4(1.0f,0.0f,0.0f,0.0f);
-                return col;
+                //float4 mousePos = ComputeScreenPos(i.vertex);
+                //mousePos.xy /= mousePos.w;
+                
+                if (abs(mousePosition.x - i.vertex.x) < 1.0 && abs(mousePosition.y - i.vertex.y) < 1.0)
+                {
+                    int a;
+                    InterlockedExchange(_collisionBuffer[0], identifier/*(int)(i.vertex.y)*/, a);
+                }
+                
+                if (selectedIdentifier != identifier)
+                {
+                    return fixed4(1.0f, 0.0f, 0.0f, 1.0f);
+                }
+                else
+                {
+                    return fixed4(1.0f, 1.0f, 1.0f, 1.0f);
+                }
             }
             ENDCG
         }

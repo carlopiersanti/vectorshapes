@@ -9,9 +9,22 @@ public class VectorLine : MonoBehaviour
     private List<Vector3> uvs;
     private List<int> triangles;
     private Mesh mesh;
+    MaterialPropertyBlock materialPropertyBlock;
 
     [SerializeField]
     private Material material;
+
+    public void Awake()
+    {
+        materialPropertyBlock = new MaterialPropertyBlock();
+        materialPropertyBlock.SetInt("identifier", -1);
+    }
+
+    public void SetId(int id)
+    {
+        materialPropertyBlock.SetInt("identifier", id);
+        GetComponent<MeshRenderer>().SetPropertyBlock(materialPropertyBlock);
+    }
 
     public void SetPoints(List<Vector3> newPoints)
     {
