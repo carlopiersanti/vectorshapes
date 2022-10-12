@@ -550,7 +550,7 @@ GameObject:
   - component: {fileID: 587057287}
   - component: {fileID: 587057291}
   m_Layer: 0
-  m_Name: VectorLine
+  m_Name: VectorLineUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -618,9 +618,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a5eae2d4b36b0428ae4c384c0aeac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vectorLineBase: {fileID: 4484153939615535561, guid: 1a2f566ffaabc7a46b8cab9a3561302a,
+    type: 3}
   textMesh: {fileID: 1599216439}
   material: {fileID: 2100000, guid: 75fec1087b6b03b4d96b203cccb97911, type: 2}
-  mesh: {fileID: 0}
 --- !u!4 &587057290
 Transform:
   m_ObjectHideFlags: 0
@@ -647,7 +648,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 100, y: 100, z: 0}
+  m_Size: {x: 1000, y: 1000, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1135196015
 GameObject:
@@ -920,130 +921,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37b55da771b3147d18272e5649a90f03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color:
-    r: 1
-    g: 1
-    b: 1
-    a: 1
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  <useLegacyMeshGeneration>k__BackingField: 0
-  m_Maskable: 1
-  m_IsMaskingGraphic: 0
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  m_Texture: {fileID: 0}
-  m_UVRect:
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  m_updateVerts: 0
-  m_updateUVs: 0
-  m_updateColors: 0
-  m_updateNormals: 0
-  m_updateTangents: 0
-  m_updateTris: 0
-  m_mesh: {fileID: 0}
-  vectorLine:
-    m_lineVertices:
-    - {x: 83, y: 296, z: 0}
-    - {x: 283, y: 296, z: 0}
-    - {x: 283, y: 294, z: 0}
-    - {x: 83, y: 294, z: 0}
-    m_lineUVs:
-    - {x: 0, y: 1}
-    - {x: 1, y: 1}
-    - {x: 1, y: 0}
-    - {x: 0, y: 0}
-    m_lineColors:
-    - rgba: 4294967295
-    - rgba: 4294967295
-    - rgba: 4294967295
-    - rgba: 4294967295
-    m_lineTriangles: 000000000100000003000000010000000200000003000000
-    m_vertexCount: 4
-    m_go: {fileID: 1690892882}
-    m_rectTransform: {fileID: 1690892883}
-    m_color:
-      rgba: 4294967295
-    m_canvasState: 1
-    m_is2D: 1
-    m_points2:
-    - {x: 83, y: 295}
-    - {x: 283, y: 295}
-    m_points3: []
-    m_pointsCount: 2
-    m_screenPoints: []
-    m_lineWidths:
-    - 1
-    m_lineWidth: 2
-    m_maxWeldDistance: 16
-    m_distances: []
-    m_name: Line
-    m_material: {fileID: 0}
-    m_originalTexture: {fileID: 0}
-    m_texture: {fileID: 0}
-    m_active: 1
-    m_lineType: 0
-    m_capLength: 0
-    m_smoothWidth: 0
-    m_smoothColor: 0
-    m_joins: 2
-    m_isAutoDrawing: 0
-    m_drawStart: 0
-    m_drawEnd: 1
-    m_endPointsUpdate: 0
-    m_useNormals: 0
-    m_useTangents: 0
-    m_normalsCalculated: 0
-    m_tangentsCalculated: 0
-    m_capType: 4
-    m_endCap: 
-    m_useCapColors: 0
-    m_frontColor:
-      rgba: 0
-    m_backColor:
-      rgba: 0
-    m_frontEndCapIndex: -1
-    m_backEndCapIndex: -1
-    m_lineUVBottom: 0
-    m_lineUVTop: 1
-    m_frontCapUVBottom: 0
-    m_frontCapUVTop: 0
-    m_backCapUVBottom: 0
-    m_backCapUVTop: 0
-    m_continuousTexture: 0
-    m_drawTransform: {fileID: 0}
-    m_viewportDraw: 0
-    m_textureScale: 0
-    m_useTextureScale: 0
-    m_textureOffset: 0
-    m_useMatrix: 0
-    m_matrix:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    m_collider: 0
-    m_trigger: 0
-    m_physicsMaterial: {fileID: 0}
-    m_alignOddWidthToPixels: 0
 --- !u!222 &1690892885
 CanvasRenderer:
   m_ObjectHideFlags: 0

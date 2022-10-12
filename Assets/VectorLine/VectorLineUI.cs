@@ -7,13 +7,16 @@ namespace Test
 
 public class VectorLineUI : MonoBehaviour
 {
+    [SerializeField]
+    private VectorLine vectorLineBase;
+
+    private VectorLine vectorLine;
+
     public TMP_Text textMesh;
 
     public Material material;
 
-    public Mesh mesh;
-
-    List<Vector2> linepoints = new List<Vector2>();
+    List<Vector3> linepoints = new List<Vector3>();
     ComputeBuffer collisionBuffer;
     private void Awake()
     {
@@ -22,11 +25,10 @@ public class VectorLineUI : MonoBehaviour
         Graphics.SetRandomWriteTarget(1, collisionBuffer, true);
         material.SetBuffer("_collisionBuffer", collisionBuffer);
 
-        mesh = new Mesh();
-        CreateMesh(linepoints);
+        vectorLine = GameObject.Instantiate(vectorLineBase.gameObject).GetComponent<VectorLine>();
     }
 
-    private void CreateMesh(List<Vector2> linepoints)
+    /*private void CreateMesh(List<Vector2> linepoints)
     {
         if (linepoints.Count < 2)
             return;
@@ -89,7 +91,7 @@ public class VectorLineUI : MonoBehaviour
         mesh.SetTriangles(triangles,0,false);
 
         GetComponent<MeshFilter>().mesh = mesh;
-    }
+    }*/
 
     Vector3 lastMousePosition = new Vector3(float.NaN, float.NaN, float.NaN);
 
@@ -105,9 +107,11 @@ public class VectorLineUI : MonoBehaviour
             Ray r = Camera.main.ScreenPointToRay(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 1));
             if (Physics.Raycast(r, out var raycastHit))
             {
-                Vector3 hitpoint = transform.InverseTransformPoint(raycastHit.point);
-                linepoints.Add(hitpoint);
-                CreateMesh(linepoints);
+                linepoints.Add(raycastHit.point);
+                if (linepoints.Count == 2)
+                    vectorLine.CreateMesh(linepoints);
+                else if (linepoints.Count > 2)
+                    vectorLine.AddPoint(raycastHit.point);
             }
         }
     }
